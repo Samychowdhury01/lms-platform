@@ -7,19 +7,16 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { TCreateCourse } from "@/schema/form-validation-schema";
 
 import { UseFormReturn } from "react-hook-form";
 
-type TNameType = keyof TCreateCourse;
-
 type TInputProps = {
-  label: string;
-  name: TNameType;
+  label?: string;
+  name: string;
   type: any;
   placeholder?: string;
   isSubmitting?: boolean;
-  form: UseFormReturn<TCreateCourse>;
+  form: UseFormReturn<any>;
   description?: string;
 };
 
@@ -52,23 +49,13 @@ export const CustomInputField = ({
         <FormItem>
           <FormLabel className="font-semibold">{label}</FormLabel>
           <FormControl>
-            {type === "file" ? (
-              <Input
-                type="file"
-                accept="image/*"
-                placeholder={placeholder}
-                onChange={(e) => field.onChange(e.target.files?.[0])}
-                ref={field.ref}
-              />
-            ) : (
-              // @ts-ignore
-              <Input
-                disabled={isSubmitting}
-                type={type}
-                placeholder={placeholder}
-                {...field}
-              />
-            )}
+            <Input
+              disabled={isSubmitting}
+              type={type}
+              placeholder={placeholder}
+              className="bg-white"
+              {...field}
+            />
           </FormControl>
           {description && <FormDescription>{description}</FormDescription>}
           <FormMessage />
