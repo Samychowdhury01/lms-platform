@@ -9,34 +9,36 @@ import {
   FormMessage,
   Form,
 } from "@/components/ui/form";
-import {
-  createCourseValidationSchema,
-  TCourse,
-} from "@/schema/form-validation-schema";
 import { Button } from "@/components/ui/button";
 
-import { Pencil } from "lucide-react";
+import { Pencil, PlusCircle } from "lucide-react";
 
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
-import { Textarea } from "@/components/ui/textarea";
-import { cn } from "@/lib/utils";
+import { Chapter, Course } from "@prisma/client";
+import { z } from "zod";
+import { Input } from "@/components/ui/input";
 
 type TFromTitleProps = {
   courseId: string;
-  initialData: {
-    description: string | null;
-  };
+  initialData: Course & { chapters: Chapter[] };
 };
 
-const FormDescriptionUpdate = ({ courseId, initialData }: TFromTitleProps) => {
+const chapterSchema = z.object({
+  title: z.string().min(1),
+});
+
+type TChapterTitle = z.infer<typeof chapterSchema>;
+
+const ChapterForm = ({ courseId, initialData }: TFromTitleProps) => {
   const router = useRouter();
-  const [isEditing, setIsEditing] = useState(false);
+  const [isCreating, setIsCreating] = useState(false);
+  const [isUpdating, setIsUpdating] = useState(false);
   const defaultValues = {
-    description: initialData.description || "",
+    title: "",
   };
-  const form = useForm<TCourse>({
-    resolver: zodResolver(createCourseValidationSchema),
+  const form = useForm<TChapterTitle>({
+    resolver: zodResolver(chapterSchema),
     defaultValues,
   });
 
@@ -47,8 +49,8 @@ const FormDescriptionUpdate = ({ courseId, initialData }: TFromTitleProps) => {
   } = form;
 
   // form submit handler
-  const onSubmit = async (value: Pick<TCourse, "description">) => {
-    const response = await fetch(`/api/courses/${courseId}`, {
+  const onSubmit = async (value: TChapterTitle) => {
+    const response = await fetch(`/api/courses/${courseId}/chapters`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
@@ -58,43 +60,46 @@ const FormDescriptionUpdate = ({ courseId, initialData }: TFromTitleProps) => {
     const data = await response.json();
     console.log(data, "form response");
     if (data.success) {
-      toast.success("Course updated successfully");
+      toast.success("chapter created successfully");
       router.refresh();
-      toggleEdit();
+      toggleCrating();
       reset();
     } else {
       toast.error(data.message);
     }
   };
 
-  const onError = (error: any) => console.log(error)
+  const onError = (error: any) => console.log(error);
 
-  const toggleEdit = () => setIsEditing((current) => !current);
+  const toggleCrating = () => setIsCreating((current) => !current);
 
   return (
     <div className="mt-6 border bg-slate-100 rounded-md p-4">
       <div className="font-medium flex items-center justify-between">
-        Course Description
-        <Button type="button" variant={"ghost"} onClick={toggleEdit}>
-          {isEditing ? (
+        Course Chapters
+        <Button type="button" variant={"ghost"} onClick={toggleCrating}>
+          {isCreating ? (
             <>Cancel</>
           ) : (
             <>
-              <Pencil size={16} className="mr-1" /> Edit description
+              <PlusCircle size={16} className="mr-1" /> Add Chapter
             </>
           )}
         </Button>
       </div>
-      {isEditing && (
+      {isCreating && (
         <Form {...form}>
-          <form onSubmit={handleSubmit(onSubmit,onError)} className="space-y-4 mt-4">
+          <form
+            onSubmit={handleSubmit(onSubmit, onError)}
+            className="space-y-4 mt-4"
+          >
             <FormField
               control={form.control}
-              name="description"
+              name="title"
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <Textarea
+                    <Input
                       disabled={isSubmitting}
                       placeholder="What is this course about?"
                       className="bg-white"
@@ -108,24 +113,23 @@ const FormDescriptionUpdate = ({ courseId, initialData }: TFromTitleProps) => {
             />
             <div className="flex items-center gap-x-2">
               <Button type="submit" disabled={isSubmitting}>
-                Save
+                Create
               </Button>
             </div>
           </form>
         </Form>
       )}
-      {
-        !isEditing && (
-        <p
-        className={cn(
-          "text-sm mt-2",
-          !initialData.description && "text-slate-500 italic",
-        )}
-        >{initialData.description || 'No description available.'}</p>
-        )
-      }
+      {!isCreating && !initialData.chapters.length && (
+        <p className="text-slate-500 italic">No Chapters.</p>
+      )}
+      {/* TODO ADD CHAPTERS */}
+      {!isCreating && (
+        <p className="text-xs text-muted-foreground mt-4">
+          Drag and drip to reorder the chapters
+        </p>
+      )}
     </div>
   );
 };
 
-export default FormDescriptionUpdate;
+export default ChapterForm;

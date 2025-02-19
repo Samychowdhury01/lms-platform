@@ -3,37 +3,40 @@ import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
-  FormControl,
-  FormField,
-  FormItem,
-  FormMessage,
-  Form,
-} from "@/components/ui/form";
-import {
   createCourseValidationSchema,
   TCourse,
 } from "@/schema/form-validation-schema";
 import { Button } from "@/components/ui/button";
 
 import { Pencil } from "lucide-react";
-
+import {
+  FormControl,
+  FormField,
+  FormItem,
+  FormMessage,
+  Form,
+} from "@/components/ui/form";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
-import { Textarea } from "@/components/ui/textarea";
+import { Course } from "@prisma/client";
+import { Combobox } from "@/components/ui/combo-box";
 import { cn } from "@/lib/utils";
 
-type TFromTitleProps = {
+type TCategoryFormProps = {
   courseId: string;
-  initialData: {
-    description: string | null;
-  };
+  initialData: Course;
+  options: { label: string; value: string }[];
 };
 
-const FormDescriptionUpdate = ({ courseId, initialData }: TFromTitleProps) => {
+const CategoryForm = ({
+  courseId,
+  initialData,
+  options,
+}: TCategoryFormProps) => {
   const router = useRouter();
   const [isEditing, setIsEditing] = useState(false);
   const defaultValues = {
-    description: initialData.description || "",
+    categoryId: initialData.categoryId || "",
   };
   const form = useForm<TCourse>({
     resolver: zodResolver(createCourseValidationSchema),
@@ -47,7 +50,7 @@ const FormDescriptionUpdate = ({ courseId, initialData }: TFromTitleProps) => {
   } = form;
 
   // form submit handler
-  const onSubmit = async (value: Pick<TCourse, "description">) => {
+  const onSubmit = async (value: TCourse) => {
     const response = await fetch(`/api/courses/${courseId}`, {
       method: "PATCH",
       headers: {
@@ -67,41 +70,36 @@ const FormDescriptionUpdate = ({ courseId, initialData }: TFromTitleProps) => {
     }
   };
 
-  const onError = (error: any) => console.log(error)
-
   const toggleEdit = () => setIsEditing((current) => !current);
 
+  const selectedOption = options.find(
+    (option) => option.value === initialData.categoryId
+  )?.label;
   return (
     <div className="mt-6 border bg-slate-100 rounded-md p-4">
       <div className="font-medium flex items-center justify-between">
-        Course Description
+        Course Category
         <Button type="button" variant={"ghost"} onClick={toggleEdit}>
           {isEditing ? (
             <>Cancel</>
           ) : (
             <>
-              <Pencil size={16} className="mr-1" /> Edit description
+              <Pencil size={16} className="mr-1" /> Edit Category
             </>
           )}
         </Button>
       </div>
-      {isEditing && (
+      {isEditing ? (
         <Form {...form}>
-          <form onSubmit={handleSubmit(onSubmit,onError)} className="space-y-4 mt-4">
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 mt-4">
             <FormField
               control={form.control}
-              name="description"
+              name="categoryId"
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <Textarea
-                      disabled={isSubmitting}
-                      placeholder="What is this course about?"
-                      className="bg-white"
-                      {...field}
-                    />
+                    <Combobox options={options} {...field} />
                   </FormControl>
-
                   <FormMessage />
                 </FormItem>
               )}
@@ -113,19 +111,18 @@ const FormDescriptionUpdate = ({ courseId, initialData }: TFromTitleProps) => {
             </div>
           </form>
         </Form>
-      )}
-      {
-        !isEditing && (
+      ) : (
         <p
-        className={cn(
-          "text-sm mt-2",
-          !initialData.description && "text-slate-500 italic",
-        )}
-        >{initialData.description || 'No description available.'}</p>
-        )
-      }
+          className={cn(
+            "text-sm mt-2",
+            !initialData.categoryId && "text-slate-500 italic"
+          )}
+        >
+          {selectedOption || "No Category Available."}
+        </p>
+      )}
     </div>
   );
 };
 
-export default FormDescriptionUpdate;
+export default CategoryForm;

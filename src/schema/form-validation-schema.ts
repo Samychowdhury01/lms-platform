@@ -17,7 +17,7 @@ export const createCourseValidationSchema = z.object({
   imageUrl: requiredString.url({ message: "Invalid image URL" }).optional(),
   price: z.number().positive().optional(),
   isPublished: z.boolean().default(false),
-  categoryId: z.string().optional(), // Can be null in DB
+  categoryId: z.string().optional(), 
   createdAt: z.date().default(new Date()),
   updatedAt: z.date().optional(),
 });
