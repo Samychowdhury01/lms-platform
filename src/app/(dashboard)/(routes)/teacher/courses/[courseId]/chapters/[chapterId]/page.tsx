@@ -1,12 +1,13 @@
 import { IconBadge } from "@/components/ui/icon-badge";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@clerk/nextjs/server";
-import { ArrowLeft, Eye, LayoutDashboard } from "lucide-react";
+import { ArrowLeft, Eye, LayoutDashboard, Video } from "lucide-react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import ChapterFromTitle from "./_components/chapter-title-form";
 import ChapterFormDescription from "./_components/chapter-form-description";
 import ChapterAccessForm from "./_components/chapter-access-form";
+import ChapterFormVideo from "./_components/chapter-video-form";
 
 interface ChapterAddPageProps {
   params: Promise<{
@@ -35,7 +36,6 @@ const ChapterAddPage = async ({ params }: ChapterAddPageProps) => {
       muxData: true,
     },
   });
-
   if (!chapter) {
     return redirect("/");
   }
@@ -98,6 +98,19 @@ const ChapterAddPage = async ({ params }: ChapterAddPageProps) => {
             />
           </div>
         </div>
+        {/* video container */}
+        <div>
+            {/* title and icon */}
+            <div className="flex items-center gap-x-2">
+              <IconBadge icon={Video} />
+              <h2 className="text-lg">Add Video</h2>
+            </div>
+            <ChapterFormVideo
+              chapterId={chapterId}
+              initialData={chapter}
+              courseId={courseId}
+            />
+          </div>
       </div>
     </section>
   );
