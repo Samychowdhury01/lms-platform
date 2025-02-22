@@ -54,7 +54,6 @@ const ChapterFormDescription = ({
 
   // form submit handler
   const onSubmit = async (value: TChapterDescription) => {
-    console.log(value.description)
     const response = await fetch(
       `/api/courses/${courseId}/chapters/${chapterId}`,
       {
@@ -124,7 +123,7 @@ const ChapterFormDescription = ({
           </form>
         </Form>
       )}
-      {!isEditing && (
+      {!isEditing &&  !initialData.description && (
         <p
           className={cn(
             "text-sm mt-2",

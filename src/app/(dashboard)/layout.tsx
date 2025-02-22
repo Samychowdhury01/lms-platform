@@ -13,7 +13,7 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
         <SidebarInset className="flex flex-col w-full">
           <Navbar />
           <div className="flex-1">
-            <main className="h-full p-4">
+            <main className="h-full">
               {children}
             </main>
           </div>

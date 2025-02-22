@@ -97,3 +97,12 @@ body {
 .cl-internal-1dauvpw, .cl-internal-1hp5nqm{
   display: none !important;
 }
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}

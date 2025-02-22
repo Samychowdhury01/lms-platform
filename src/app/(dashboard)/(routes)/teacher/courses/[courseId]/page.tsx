@@ -16,6 +16,8 @@ import CategoryForm from "./_components/category-form";
 import PriceForm from "./_components/price-form";
 import AttachmentFrom from "./_components/attachment-form";
 import ChapterForm from "./_components/capters-form";
+import Banner from "@/components/banner";
+import CourseActions from "./_components/course-action";
 
 type TNewCoursePageProps = {
   params: Promise<{
@@ -33,20 +35,20 @@ const NewCoursePage = async ({ params }: TNewCoursePageProps) => {
   const course = await prisma.course.findUnique({
     where: {
       id: courseId,
-      userId
+      userId,
     },
     include: {
       chapters: {
         orderBy: {
-          position: "asc"
-        }
+          position: "asc",
+        },
       },
       attachments: {
         orderBy: {
           createdAt: "desc",
-        }
-      }
-    }
+        },
+      },
+    },
   });
 
   const categories = await prisma.category.findMany({
@@ -65,14 +67,20 @@ const NewCoursePage = async ({ params }: TNewCoursePageProps) => {
     course.imageUrl,
     course.price,
     course.categoryId,
-    course.chapters.some((chapter) => chapter.isPublished)
+    course.chapters.some((chapter) => chapter.isPublished),
   ];
 
   const totalFields = requiredFields.length;
   const completedFields = requiredFields.filter(Boolean).length;
   const completionText = `(${completedFields}/${totalFields})`;
-
+  const isComplete = requiredFields.every(Boolean);
   return (
+  <>
+  {
+    !course.isPublished && <Banner
+    label="This course is unpublished. It won't be visible to student."
+    />
+  }
     <section className="p-6">
       <div className="flex items-center justify-between">
         <div className="flex flex-col gap-y-2">
@@ -81,7 +89,16 @@ const NewCoursePage = async ({ params }: TNewCoursePageProps) => {
             Complete all fields {completionText}
           </p>
         </div>
+        {/* actions button */}
+        <CourseActions
+        isPublished={course.isPublished}
+        courseId={courseId}
+        disabled={!isComplete}
+
+        />
+
       </div>
+      {/* main container */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-16">
         {/* container for form fields and others */}
         <div>
@@ -130,6 +147,7 @@ const NewCoursePage = async ({ params }: TNewCoursePageProps) => {
         </div>
       </div>
     </section>
+  </>
   );
 };
 
