@@ -65,11 +65,11 @@ const AttachmentFrom = ({ courseId, initialData }: TAttachmentFromProps) => {
         Course Resources
         <Button type="button" variant={"ghost"} onClick={toggleEdit}>
           {isEditing && <>Cancel</>}
-          {!isEditing && initialData.attachments.length === 0 && (
+          
             <>
               <PlusCircle size={16} className="mr-1" /> Add attachment
             </>
-          )}
+          
         </Button>
       </div>
       <div>
@@ -82,7 +82,7 @@ const AttachmentFrom = ({ courseId, initialData }: TAttachmentFromProps) => {
           initialData.attachments.map((attachment) => (
             <div
               key={attachment.id}
-              className="bg-sky-100 border border-sky-200  p-3 flex items-center justify-between"
+              className="bg-sky-100 border border-sky-200  p-3 flex items-center justify-between mb-3"
             >
               <div className="flex items-center gap-x-2 w-full  text-sky-700 rounded-md">
                 <File className="h-4 w-4 flex-shrink-0" />

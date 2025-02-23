@@ -2,6 +2,7 @@
 
 import ConfirmModal from "@/components/modals/confirm-modal";
 import { Button } from "@/components/ui/button";
+import { useConfettiStore } from "@/hooks/use-confetti-store";
 import { Trash } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -19,7 +20,7 @@ const CourseActions = ({
 }: CourseActionProps) => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
-
+const confetti = useConfettiStore()
   // confirm delete
   const onDelete = async () => {
     try {
@@ -80,6 +81,7 @@ const CourseActions = ({
         const data = await result.json();
         if (data.success) {
           toast.success("Course published");
+          confetti.onOpen()
           router.refresh();
         }
       }

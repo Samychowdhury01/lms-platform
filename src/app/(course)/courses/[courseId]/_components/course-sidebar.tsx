@@ -1,5 +1,4 @@
 import type { Chapter, Course, UserProgress } from "@prisma/client";
-import { Book, CheckCircle, Lock } from "lucide-react";
 
 import {
   Sidebar,
@@ -10,12 +9,13 @@ import {
   SidebarHeader,
   SidebarMenu,
   SidebarMenuItem,
-  SidebarMenuButton,
+
 } from "@/components/ui/sidebar";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import SidebarChapterItem from "./sidebar-chapter-item";
+import CourseProgressBar from "./course-progress-bar";
 
 interface CourseSidebarProps {
   course: Course & {
@@ -50,6 +50,15 @@ const CourseSidebar = async ({ course, progressCount }: CourseSidebarProps) => {
           {progressCount}/{course.chapters.length} lessons completed
         </p>
         {/* check progress and add progress bar */}
+        {
+          purchase && (
+            <CourseProgressBar
+            value={progressCount}
+            variant="success"
+             
+            />
+          )
+        }
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>

@@ -7,7 +7,6 @@ import CourseSidebar from "./_components/course-sidebar";
 import {
   SidebarInset,
   SidebarProvider,
-  SidebarTrigger,
 } from "@/components/ui/sidebar";
 import CourseNavbar from "./_components/course-navbar";
 

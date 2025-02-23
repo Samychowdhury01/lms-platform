@@ -1,11 +1,17 @@
+"use client"
+import { useConfettiStore } from '@/hooks/use-confetti-store';
 import React from 'react';
-
+import ReactConfetti from 'react-confetti'
 const ConfettiProvider = () => {
-    return (
-        <div>
-            
-        </div>
-    );
+    const confetti = useConfettiStore()
+
+    if(!confetti.isOpen) return null
+    return <ReactConfetti
+    className='pointer-events-none z-[100]'
+    numberOfPieces={500}
+    recycle={false}
+    onConfettiComplete={()=> confetti.onClose()}
+    />
 };
 
 export default ConfettiProvider;

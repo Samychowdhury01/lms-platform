@@ -4,6 +4,7 @@ import React from "react";
 import { IconBadge } from "./ui/icon-badge";
 import { BookOpen } from "lucide-react";
 import { formatPrice } from "@/lib/format";
+import CourseProgressBar from "@/app/(course)/courses/[courseId]/_components/course-progress-bar";
 
 type TCourseCardProps = {
   id: string;
@@ -46,9 +47,15 @@ const CourseCard = ({
             </div>
           </div>
           {progress !== null ? (
-            <div>TODO: add progress bar</div>
+            <CourseProgressBar
+              value={progress}
+              size="sm"
+              variant={progress === 100 ? "success" : "default"}
+            />
           ) : (
-            <p className="md:text-sm font-medium text-slate-700">{formatPrice(price)}</p>
+            <p className="md:text-sm font-medium text-slate-700">
+              {formatPrice(price)}
+            </p>
           )}
         </div>
       </div>
