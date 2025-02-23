@@ -11,10 +11,11 @@ model Course {
     createdAt   DateTime     @default(now())
     updatedAt   DateTime     @updatedAt
     attachments Attachment[]
-    chapters     Chapter[]
-    purchases    Purchase[]
+    chapters    Chapter[]
+    purchases   Purchase[]
 
     @@index([categoryId])
+    @@fulltext([title])
 }
 
 model Category {
@@ -61,10 +62,11 @@ model MuxData {
 }
 
 model UserProgress {
-    id        String  @id @default(auto()) @map("_id") @db.ObjectId
-    userId    String
-    chapterId String  @db.ObjectId
-    chapter   Chapter @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+    id          String  @id @default(auto()) @map("_id") @db.ObjectId
+    userId      String
+    isCompleted Boolean @default(false)
+    chapterId   String  @db.ObjectId
+    chapter     Chapter @relation(fields: [chapterId], references: [id], onDelete: Cascade)
 
     @@unique([userId, chapterId])
     @@index([chapterId])
@@ -78,6 +80,7 @@ model Purchase {
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 
+    @@unique([userId, courseId])
     @@index([courseId])
 }
 
