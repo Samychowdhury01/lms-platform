@@ -13,6 +13,7 @@ import {
 import { IconType } from "react-icons/lib";
 import CategoryItem from "./single-category-item";
 
+
 interface CategoriesItemProps {
   items: Category[];
 }

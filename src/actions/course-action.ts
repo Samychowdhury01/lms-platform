@@ -4,7 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { Category, Course } from "@prisma/client";
 import { getProgress } from "./progress-action";
 
-type CourseWithProgressWithCategory = Course & {
+export type CourseWithProgressWithCategory = Course & {
   category: Category | null;
   chapters: { id: string }[];
   progress: number | null;

@@ -28,12 +28,13 @@ const CourseList = ({ items }: TCourseListProps) => {
           progress={item.progress}
           />
         ))}
-        {items.length === 0 && (
+       
+      </div>
+      {items.length === 0 && (
           <div className="text-center text-sm text-muted-foreground mt-10">
             No courses found
           </div>
         )}
-      </div>
     </div>
   );
 };

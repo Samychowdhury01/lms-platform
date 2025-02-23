@@ -10,7 +10,6 @@ import { isTeacher } from "@/lib/teacher";
 
 const NavbarRoutes = () => {
   const {userId} = useAuth()
-  console.log(userId, 'hiiiiiiiiii')
   const pathname = usePathname();
   const isTeacherPage = pathname?.startsWith("/teacher");
   const isCoursePage = pathname?.startsWith("/courses");

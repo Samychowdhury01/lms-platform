@@ -41,7 +41,7 @@ export const getDashboardCourses = async (
       (purchase) => purchase.course
     ) as CoursesWithProgressWithCategory[];
 
-    for (let course of courses) {
+    for (const course of courses) {
       const progress = await getProgress(userId, course.id);
       course["progress"] = progress;
     }

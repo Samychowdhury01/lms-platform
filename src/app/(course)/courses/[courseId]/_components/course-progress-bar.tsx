@@ -2,7 +2,6 @@
 
 import { Progress } from "@/components/ui/progress";
 import { cn } from "@/lib/utils";
-import { useEffect, useState } from "react";
 
 interface CourseProgressBarProps {
   value: number;

@@ -1,11 +1,12 @@
 import { prisma } from "@/lib/prisma";
 import React from "react";
-import CategoriesItem from "./_components/categories-item";
 import SearchInput from "@/components/search-input";
 import { getCourse } from "@/actions/course-action";
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
+import CategoriesItem from "./_components/categories-item";
 import CourseList from "./_components/course-list";
+
 
 type SearchPageProps = {
   searchParams?: Promise<{
