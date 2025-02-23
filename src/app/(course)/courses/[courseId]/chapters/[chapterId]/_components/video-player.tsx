@@ -6,12 +6,13 @@ import { toast } from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { Loader2, Lock } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useConfettiStore } from "@/hooks/use-confetti-store";
 
 interface VideoPlayerProps {
   chapterId: string;
   title: string;
   courseId: string;
-  nextChapter: string;
+  nextChapterId: string;
   playbackId: string;
   isLocked: boolean;
   completeOnEnd: boolean;
@@ -21,12 +22,45 @@ const VideoPlayer = ({
   chapterId,
   title,
   courseId,
-  nextChapter,
+  nextChapterId,
   playbackId,
   isLocked,
   completeOnEnd,
 }: VideoPlayerProps) => {
+  const router = useRouter()
+  const confetti = useConfettiStore()
     const [isReady, setIsReady] = useState(false)
+
+    const onEnd = async () => {
+      try {
+        if(completeOnEnd){
+          const response = await fetch(
+            `/api/courses/${courseId}/chapters/${chapterId}/progress`,
+            {
+              method: "PUT",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ isCompleted: true }),
+            }
+          );
+
+          
+        if (!nextChapterId) {
+          confetti.onOpen();
+        }
+
+        toast.success("Progress updated");
+        router.refresh();
+        }
+        if (nextChapterId) {
+          router.push(`/courses/${courseId}/chapters/${nextChapterId}`);
+        }
+        
+      } catch (error) {
+        console.log("[PROGRESS_BUTTON]", error);
+        toast.error("Something went wrong!");
+      } 
+    };
+
   return (
     <div className="relative aspect-video">
       {!isReady && !isLocked && (
@@ -49,7 +83,7 @@ const VideoPlayer = ({
                 !isReady && "hidden"
             )}
             onCanPlay={()=> setIsReady(true)}
-            onEnded={()=>{}}
+            onEnded={onEnd}
             autoPlay
             />
         )
