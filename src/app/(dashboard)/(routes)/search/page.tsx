@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/prisma";
-import React from "react";
+import React, {Suspense} from "react";
 import SearchInput from "@/components/search-input";
 import { getCourse } from "@/actions/course-action";
 import { auth } from "@clerk/nextjs/server";
@@ -35,7 +35,9 @@ const SearchPage = async ({ searchParams }: SearchPageProps) => {
   return (
     <section>
       <div className="px-6 pt-6 md:hidden md:mb-0 block">
+        <Suspense fallback={<div>Loading ...</div>}>
         <SearchInput />
+        </Suspense>
       </div>
       <div className="p-6 space-y-4">
         <CategoriesItem items={categories} />

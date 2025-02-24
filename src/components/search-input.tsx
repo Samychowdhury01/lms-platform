@@ -9,12 +9,12 @@ import { useQueryParam } from "@/hooks/use-query-param";
 const SearchInput = () => {
   const [value, setValue] = useState("");
   const debouncedValue = useDebounce(value);
-  // const searchParams = useSearchParams();
+  const searchParams = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
 
-  // const currentCategoryId = searchParams.get("categoryId");
-  const currentCategoryId = useQueryParam("categoryId");
+  const currentCategoryId = searchParams.get("categoryId");
+  // const currentCategoryId = useQueryParam("categoryId");
 
 console.log(currentCategoryId)
 
